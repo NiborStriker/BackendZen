@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Le Générateur Zen</title>
+    <style>
+        /* CSS (Le Style) */
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f4f7f6; /* Fond très léger */
+            color: #333;
+            text-align: center;
+        }
+
+        .conteneur-citation {
+            background-color: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 90%;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .citation-texte {
+            font-size: 1.5em;
+            margin-bottom: 25px;
+            min-height: 50px; /* Pour éviter que la boîte ne tremble */
+        }
+
+        .bouton-zen {
+            background-color: #2ecc71; /* Vert Zen */
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s;
+        }
+
+        .bouton-zen:hover {
+            background-color: #27ae60;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="conteneur-citation">
+        <h1>🧘 Le Générateur de Citations Zen</h1>
+        <p id="citation-texte" class="citation-texte">Cliquez sur le bouton pour recevoir une dose de sagesse...</p>
+        <button class="bouton-zen" onclick="fetchCitation()">Inspirer-moi !</button>
+    </div>
+
+    <script>
+        // JAVASCRIPT (Le Messager) Corrigé pour Claude
+        
+        async function fetchCitation() {
+            // CORRECTION 1 : Nous utilisons l'adresse '/api/citation' de Claude
+            const urlBackend = 'http://127.0.0.1:5000/api/citation'; 
+            const citationElement = document.getElementById('citation-texte');
+            
+            // 1. On prépare l'affichage pendant la requête
+            citationElement.textContent = "Chargement en cours...";
+            
+            try {
+                // 2. On envoie la requête au Backend de Claude
+                const response = await fetch(urlBackend);
+                
+                if (!response.ok) {
+                    throw new Error(`Erreur HTTP: ${response.status}`);
+                }
+                
+                // 3. On récupère la donnée JSON
+                const data = await response.json();
+                
+                // 4. On affiche la citation et l'auteur
+                // CORRECTION 2 : Nous utilisons data.texte et data.auteur
+                citationElement.textContent = `« ${data.texte} » — ${data.auteur}`; 
+                
+            } catch (error) {
+                console.error("Erreur lors de la récupération de la citation :", error);
+                citationElement.textContent = "Oups ! Le serveur n'a pas répondu. Assurez-vous que app.py est lancé.";
+            }
+        }
+
+        // On appelle la fonction au chargement pour afficher une citation dès l'ouverture
+        fetchCitation();
+
+    </script>
+</body>
+</html>
